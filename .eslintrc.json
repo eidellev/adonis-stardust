@@ -1,0 +1,6 @@
+{
+  "extends": ["plugin:adonis/typescriptApp", "prettier"],
+  "rules": {
+    "no-console": "error"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "extends": "./node_modules/@adonisjs/mrm-preset/_tsconfig",
+  "compilerOptions": {
+    "lib": ["dom", "es2019", "es2020.bigint", "es2020.string", "es2020.symbol.wellknown"],
+    "skipLibCheck": true
+  },
+  "files": [
+    "./node_modules/@adonisjs/core/build/adonis-typings/index.d.ts",
+    "./node_modules/@adonisjs/view/build/adonis-typings/index.d.ts",
+    "./node_modules/@adonisjs/config/build/adonis-typings/config.d.ts",
+    "./node_modules/@adonisjs/session/build/adonis-typings/index.d.ts"
+  ],
+  "exclude": ["build/*", "node_modules/*"]
+}
