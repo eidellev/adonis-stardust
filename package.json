@@ -3,27 +3,17 @@
   "version": "1.0.0",
   "private": false,
   "description": "Use adonis routes in the client",
-  "repository": "https://github.com/eidellev/inertiajs-adonisjs",
-  "bugs": "https://github.com/eidellev/inertiajs-adonisjs/issues",
+  "repository": "https://github.com/eidellev/adonis-stardust",
+  "bugs": "https://github.com/eidellev/adonis-stardust/issues",
   "main": "build/providers/InertiaProvider/index.js",
   "typings": "./build/adonis-typings/index.d.ts",
   "files": [
-    "build/adonis-typings",
     "build/providers",
-    "build/src",
     "build/instructions.js"
   ],
   "adonisjs": {
     "types": "@eidellev/adonis-stardust",
     "instructions": "./build/instructions.js",
-    "preloads": [
-      {
-        "file": "./start/inertia",
-        "environment": [
-          "web"
-        ]
-      }
-    ],
     "providers": [
       "@eidellev/adonis-stardust"
     ]
@@ -33,9 +23,8 @@
     "lint": "tsc --noEmit && eslint . --ext=ts",
     "lint:fix": "eslint . --ext=ts --fix",
     "clean": "rimraf build",
-    "copyfiles": "copyfiles \"templates/**/*.txt\" build",
-    "build": "cross-env npm run clean && npm run copyfiles && tsc",
-    "watch": "cross-env npm run clean && npm run copyfiles && tsc -w",
+    "build": "cross-env npm run clean && tsc",
+    "watch": "cross-env npm run clean && tsc -w",
     "test": "nyc node japaFile.js"
   },
   "dependencies": {},

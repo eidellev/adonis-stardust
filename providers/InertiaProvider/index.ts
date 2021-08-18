@@ -1,4 +1,3 @@
-import InertiaProvider from './InertiaProvider';
-export { Inertia } from '../../src/Inertia';
+import StardustProvider from './StardustProvider';
 
-export default InertiaProvider;
+export default StardustProvider;
