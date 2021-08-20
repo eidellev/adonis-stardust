@@ -16,14 +16,9 @@ export default class StardustProvider {
    */
   private getNamedRoutes(Route: RouterContract) {
     return Object.entries(Route.toJSON())
-      .map(([, routes]) =>
-        routes.map((route) => ({
-          name: route.name,
-          pattern: route.pattern,
-        })),
-      )
+      .map(([, routes]) => routes.map(({ name, pattern }) => [name, pattern]))
       .flat()
-      .filter(({ name }) => Boolean(name));
+      .filter(([name]) => Boolean(name));
   }
 
   /**
@@ -50,7 +45,7 @@ export default class StardustProvider {
     View.global('routes', () => {
       return `
 <script>
-  window.routes = ${JSON.stringify(namedRoutes)}
+  window.stardust = { namedRoutes: ${JSON.stringify(namedRoutes)} };
 </script>
       `;
     });

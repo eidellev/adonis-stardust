@@ -5,10 +5,11 @@
   "description": "Use adonis routes in the client",
   "repository": "https://github.com/eidellev/adonis-stardust",
   "bugs": "https://github.com/eidellev/adonis-stardust/issues",
-  "main": "build/providers/InertiaProvider/index.js",
+  "main": "build/providers/StardustProvider/index.js",
   "typings": "./build/adonis-typings/index.d.ts",
   "files": [
     "build/providers",
+    "build/client",
     "build/instructions.js"
   ],
   "adonisjs": {
