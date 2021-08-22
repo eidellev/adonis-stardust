@@ -6,15 +6,12 @@
   "repository": "https://github.com/eidellev/adonis-stardust",
   "bugs": "https://github.com/eidellev/adonis-stardust/issues",
   "main": "build/providers/StardustProvider/index.js",
-  "typings": "./build/adonis-typings/index.d.ts",
+  "types": "build/client/stardust.d.ts",
   "files": [
     "build/providers",
-    "build/client",
-    "build/instructions.js"
+    "build/client"
   ],
   "adonisjs": {
-    "types": "@eidellev/adonis-stardust",
-    "instructions": "./build/instructions.js",
     "providers": [
       "@eidellev/adonis-stardust"
     ]
@@ -33,20 +30,14 @@
     "@adonisjs/core": ">=5"
   },
   "devDependencies": {
-    "@adonisjs/config": "^3.0.5",
     "@adonisjs/core": "^5.1.11",
     "@adonisjs/mrm-preset": "^3.1.0",
     "@adonisjs/require-ts": "^2.0.7",
-    "@adonisjs/sink": "^4.2.2",
     "@adonisjs/view": "^3.1.0",
     "@commitlint/cli": "^12.1.4",
     "@commitlint/config-conventional": "^12.1.4",
     "@commitlint/prompt-cli": "^12.1.4",
-    "@poppinss/dev-utils": "^1.1.5",
-    "@types/common-tags": "^1.8.1",
-    "@types/supertest": "^2.0.11",
     "adonis-preset-ts": "^2.1.0",
-    "common-tags": "^1.8.0",
     "copyfiles": "^2.4.1",
     "cross-env": "^7.0.3",
     "eslint": "^7.32.0",
@@ -60,7 +51,6 @@
     "prettier": "^2.3.2",
     "rimraf": "^3.0.2",
     "semantic-release": "^17.4.4",
-    "supertest": "^6.1.5",
     "typescript": "^4.3.5"
   }
 }
