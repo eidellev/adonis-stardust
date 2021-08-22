@@ -48,4 +48,11 @@ class Stardust {
   }
 }
 
-export const routes = new Stardust();
+export let routes: Stardust;
+
+/**
+ * Initialize stardust
+ */
+export function initRoutes() {
+  routes = new Stardust();
+}

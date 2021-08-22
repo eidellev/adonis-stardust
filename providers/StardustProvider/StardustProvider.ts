@@ -45,7 +45,7 @@ export default class StardustProvider {
     View.global('routes', () => {
       return `
 <script>
-  window.stardust = { namedRoutes: ${JSON.stringify(namedRoutes)} };
+  window.stardust = {namedRoutes: ${JSON.stringify(namedRoutes)}};
 </script>
       `;
     });
