@@ -1,11 +1,13 @@
+declare global {
+  interface Window {
+    stardust: { namedRoutes: [string, string][] };
+  }
+}
+
 class Stardust {
   private routes: Map<string, string>;
 
-  constructor() {
-    // TODO: Add global types
-    // @ts-ignore
-    const { namedRoutes } = window.stardust;
-
+  constructor(namedRoutes: [string, string][]) {
     if (!namedRoutes) {
       console.error('Routes could not be found. Please make sure you use the `@routes()` tag in your view!');
       return;
@@ -14,17 +16,18 @@ class Stardust {
     this.routes = new Map(namedRoutes);
   }
 
+  /**
+   * Returns all adonis named routes
+   */
   public getRoutes() {
     return this.routes;
   }
 
   private resolveParams(path: string, params: Record<string, any>): string {
     let finalPath = path;
-    console.log(finalPath);
+
     Object.entries(params).forEach(([key, value]) => {
-      console.log({ key, value });
       finalPath = finalPath.replace(`:${key}`, value);
-      console.log(finalPath);
     });
 
     return finalPath;
@@ -54,5 +57,6 @@ export let routes: Stardust;
  * Initialize stardust
  */
 export function initRoutes() {
-  routes = new Stardust();
+  const { namedRoutes } = window.stardust;
+  routes = new Stardust(namedRoutes);
 }
