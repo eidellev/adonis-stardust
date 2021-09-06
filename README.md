@@ -59,3 +59,9 @@ import { routes } from '@eidellev/adonis-stardust';
 
 routes.route('users.show', { id: 1 }); // => `/users/1`
 ```
+
+You can also pass query parameters:
+
+```typescript
+routes.route('tasks.index', { _query: { tags: ['work', 'personal'] } }); // => `/tasks?tags=work,personal
+```
