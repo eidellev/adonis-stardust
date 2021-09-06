@@ -4,6 +4,14 @@ declare global {
   }
 }
 
+interface Params {
+  /**
+   * Query parameters
+   */
+  _query?: Record<string, any>;
+  [param: string]: string | number | boolean | Record<string, string | number | boolean> | undefined;
+}
+
 class Stardust {
   private routes: Map<string, string>;
 
@@ -23,12 +31,18 @@ class Stardust {
     return this.routes;
   }
 
-  private resolveParams(path: string, params: Record<string, any>): string {
+  private resolveParams(path: string, params: Params = {}): string {
     let finalPath = path;
+    const { _query: query } = params;
 
     Object.entries(params).forEach(([key, value]) => {
-      finalPath = finalPath.replace(`:${key}`, value);
+      finalPath = finalPath.replace(`:${key}`, String(value));
     });
+
+    if (query) {
+      const search = new URLSearchParams(Object.entries(query).map(([key, value]) => [key, String(value)]));
+      finalPath += `?${search.toString()}`;
+    }
 
     return finalPath;
   }
@@ -39,7 +53,7 @@ class Stardust {
    * @param params Route path params
    * @returns Full path with params
    */
-  public route(route: string, params: Record<string, any> = {}): string {
+  public route(route: string, params?: Params): string {
     const path = this.routes.get(route);
 
     if (!path) {
