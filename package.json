@@ -5,8 +5,8 @@
   "description": "Use adonis routes in the client",
   "repository": "https://github.com/eidellev/adonis-stardust",
   "bugs": "https://github.com/eidellev/adonis-stardust/issues",
-  "main": "build/providers/StardustProvider/index.js",
-  "types": "build/client/stardust.d.ts",
+  "main": "build/providers/StardustProvider.js",
+  "browser": "build/client/stardust.js",
   "files": [
     "build/providers",
     "build/client"
@@ -21,7 +21,9 @@
     "lint": "tsc --noEmit && eslint . --ext=ts",
     "lint:fix": "eslint . --ext=ts --fix",
     "clean": "rimraf build",
-    "build": "cross-env npm run clean && tsc",
+    "build": "cross-env npm run clean && npm run build:node && npm run build:client",
+    "build:node": "tsc",
+    "build:client": "esbuild ./build/client/stardust.js --outfile=build/client/stardust.js --allow-overwrite --bundle --platform=node --target=chrome91,edge90,firefox90,safari13",
     "watch": "cross-env npm run clean && tsc -w",
     "test": "nyc node japaFile.js"
   },
@@ -39,6 +41,7 @@
     "adonis-preset-ts": "^2.1.0",
     "copyfiles": "^2.4.1",
     "cross-env": "^7.0.3",
+    "esbuild": "^0.12.25",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-adonis": "^1.3.3",
