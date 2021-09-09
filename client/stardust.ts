@@ -1,67 +1,195 @@
 declare global {
   interface Window {
-    stardust: { namedRoutes: [string, string][] };
+    stardust: { namedRoutes: Record<string, string> };
   }
 }
 
-interface Params {
+/**
+ * Options accepted by the route method
+ */
+interface RouteOptions {
+  qs?: Record<string, any>;
+  prefixUrl?: string;
+}
+
+/**
+ * Copy of https://github.com/adonisjs/http-server/blob/develop/src/Router/LookupStore.ts#L26
+ * with a few modifications like remove the `makeSigned` method.
+ */
+class UrlBuilder {
   /**
-   * Query parameters
+   * Params to be used for building the URL
    */
-  _query?: Record<string, any>;
-  [param: string]: string | number | boolean | Record<string, string | number | boolean> | undefined;
+  private routeParams: any[] | Record<string, any>;
+
+  /**
+   * A custom query string to append to the URL
+   */
+  private queryString: Record<string, any> = {};
+
+  /**
+   * BaseURL to prefix to the endpoint
+   */
+  private baseUrl: string;
+
+  constructor(private routes: Record<string, any>) {}
+
+  /**
+   * Processes the pattern with the route params
+   */
+  private processPattern(pattern: string): string {
+    let url: string[] = [];
+    const isParamsAnArray = Array.isArray(this.routeParams);
+
+    /*
+     * Split pattern when route has dynamic segments
+     */
+    const tokens = pattern.split('/');
+    let paramsIndex = 0;
+
+    for (const token of tokens) {
+      /**
+       * Expected wildcard param to be at the end always and hence
+       * we must break out from the loop
+       */
+      if (token === '*') {
+        const wildcardParams = isParamsAnArray ? this.routeParams.slice(paramsIndex) : this.routeParams['*'];
+
+        if (!wildcardParams || !Array.isArray(wildcardParams) || !wildcardParams.length) {
+          throw new Error(`Wildcard param is required to make URL for "${pattern}" route`);
+        }
+
+        url = url.concat(wildcardParams);
+        break;
+      }
+
+      /**
+       * Token is a static value
+       */
+      if (!token.startsWith(':')) {
+        url.push(token);
+      } else {
+        const isOptional = token.endsWith('?');
+        const paramName = token.replace(/^:/, '').replace(/\?$/, '');
+        const param = isParamsAnArray ? this.routeParams[paramsIndex] : this.routeParams[paramName];
+
+        paramsIndex++;
+
+        /*
+         * A required param is always required to make the complete URL
+         */
+        if (!param && !isOptional) {
+          throw new Error(`"${param}" param is required to make URL for "${pattern}" route`);
+        }
+
+        url.push(param);
+      }
+    }
+
+    return url.join('/');
+  }
+
+  /**
+   * Finds the route inside the list of registered routes and
+   * raises exception when unable to
+   */
+  private findRouteOrFail(identifier: string) {
+    const route = this.routes[identifier];
+    if (!route) {
+      throw new Error(`Cannot find route for "${identifier}"`);
+    }
+
+    return route;
+  }
+
+  /**
+   * Suffix the query string to the URL
+   */
+  private suffixQueryString(url: string): string {
+    if (this.queryString) {
+      const encoded = new URLSearchParams(this.queryString).toString();
+      url = encoded ? `${url}?${encoded}` : url;
+    }
+
+    return url;
+  }
+
+  /**
+   * Prefix a custom url to the final URI
+   */
+  public prefixUrl(url?: string): this {
+    if (url) {
+      this.baseUrl = url;
+    }
+    return this;
+  }
+
+  /**
+   * Append query string to the final URI
+   */
+  public qs(queryString?: Record<string, any>): this {
+    if (queryString) {
+      this.queryString = queryString;
+    }
+    return this;
+  }
+
+  /**
+   * Define required params to resolve the route
+   */
+  public params(params?: any[] | Record<string, any>): this {
+    if (params) {
+      this.routeParams = params;
+    }
+    return this;
+  }
+
+  /**
+   * Generate url for the given route identifier
+   */
+  public make(identifier: string) {
+    const route = this.findRouteOrFail(identifier);
+    const url = this.processPattern(route.pattern);
+    return this.suffixQueryString(this.baseUrl ? `${this.baseUrl}${url}` : url);
+  }
 }
 
 class Stardust {
-  private routes: Map<string, string>;
+  private routes: Record<string, string>;
 
-  constructor(namedRoutes: [string, string][]) {
+  constructor(namedRoutes: Record<string, string>) {
     if (!namedRoutes) {
       console.error('Routes could not be found. Please make sure you use the `@routes()` tag in your view!');
       return;
     }
 
-    this.routes = new Map(namedRoutes);
+    this.routes = namedRoutes;
   }
 
   /**
-   * Returns all adonis named routes
+   * Returns all AdonisJS named routes
    */
   public getRoutes() {
     return this.routes;
   }
 
-  private resolveParams(path: string, params: Params = {}): string {
-    let finalPath = path;
-    const { _query: query } = params;
-
-    Object.entries(params).forEach(([key, value]) => {
-      finalPath = finalPath.replace(`:${key}`, String(value));
-    });
-
-    if (query) {
-      const search = new URLSearchParams(Object.entries(query).map(([key, value]) => [key, String(value)]));
-      finalPath += `?${search.toString()}`;
-    }
-
-    return finalPath;
+  /**
+   * Get URL builder instance to make the URL
+   * @returns Instance of URL builder
+   */
+  public builder() {
+    return new UrlBuilder(this.routes);
   }
 
   /**
    * Resolve Adonis route
    * @param route Route name
    * @param params Route path params
+   * @param options Make url options
    * @returns Full path with params
    */
-  public route(route: string, params?: Params): string {
-    const path = this.routes.get(route);
-
-    if (!path) {
-      console.error(`Route '${route}' could not resolved!`);
-      return '';
-    }
-
-    return this.resolveParams(path, params);
+  public route(route: string, params?: any[], options?: RouteOptions): string {
+    return new UrlBuilder(this.routes).params(params).qs(options?.qs).prefixUrl(options?.prefixUrl).make(route);
   }
 }
 

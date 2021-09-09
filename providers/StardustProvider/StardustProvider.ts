@@ -15,10 +15,23 @@ export default class StardustProvider {
    * Returns list of named routes
    */
   private getNamedRoutes(Route: RouterContract) {
-    return Object.entries(Route.toJSON())
-      .map(([, routes]) => routes.map(({ name, pattern }) => [name, pattern]))
-      .flat()
-      .filter(([name]) => Boolean(name));
+    /**
+     * Only sharing the main domain routes. Subdomains are
+     * ignored for now. Let's see if many people need it
+     */
+    const mainDomainRoutes = Route.toJSON()['root'];
+
+    return mainDomainRoutes.reduce<Record<string, string>>((routes, route) => {
+      if (route.name) {
+        routes[route.name] = route.pattern;
+      }
+
+      if (typeof route.handler === 'string') {
+        routes[route.handler] = route.pattern;
+      }
+
+      return routes;
+    }, {});
   }
 
   /**
@@ -41,7 +54,7 @@ export default class StardustProvider {
     });
   }
 
-  private registerRoutesGlobal(View: ViewContract, namedRoutes) {
+  private registerRoutesGlobal(View: ViewContract, namedRoutes: Record<string, string>) {
     View.global('routes', () => {
       return `
 <script>
