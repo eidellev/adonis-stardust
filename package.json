@@ -7,6 +7,7 @@
   "bugs": "https://github.com/eidellev/adonis-stardust/issues",
   "main": "build/providers/StardustProvider.js",
   "browser": "build/client/stardust.js",
+  "types": "build/client/stardust.d.ts",
   "files": [
     "build/providers",
     "build/client"
