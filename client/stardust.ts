@@ -206,12 +206,12 @@ class Stardust {
   }
 }
 
-export let routes: Stardust;
+export let stardust: Stardust;
 
 /**
  * Initialize stardust
  */
 export function initRoutes() {
   const { namedRoutes } = window.stardust;
-  routes = new Stardust(namedRoutes);
+  stardust = new Stardust(namedRoutes);
 }
