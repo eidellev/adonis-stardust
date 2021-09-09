@@ -64,7 +64,7 @@ export default class StardustProvider {
     });
   }
 
-  public async ready() {
+  public ready() {
     this.app.container.withBindings(['Adonis/Core/View', 'Adonis/Core/Route'], (View, Route) => {
       const namedRoutes = this.getNamedRoutes(Route);
       this.registerRoutesGlobal(View, namedRoutes);

@@ -54,8 +54,11 @@ class UrlBuilder {
        */
       if (token === '*') {
         const wildcardParams = isParamsAnArray ? this.routeParams.slice(paramsIndex) : this.routeParams['*'];
+        if (!Array.isArray(wildcardParams)) {
+          throw new Error('Wildcard param must pass an array of values');
+        }
 
-        if (!wildcardParams || !Array.isArray(wildcardParams) || !wildcardParams.length) {
+        if (!wildcardParams.length) {
           throw new Error(`Wildcard param is required to make URL for "${pattern}" route`);
         }
 
@@ -107,7 +110,17 @@ class UrlBuilder {
    */
   private suffixQueryString(url: string): string {
     if (this.queryString) {
-      const encoded = new URLSearchParams(this.queryString).toString();
+      const params = new URLSearchParams();
+
+      for (const [key, value] of Object.entries(this.queryString)) {
+        if (Array.isArray(value)) {
+          value.forEach((item) => params.append(key, item));
+        } else {
+          params.set(key, value);
+        }
+      }
+
+      const encoded = params.toString();
       url = encoded ? `${url}?${encoded}` : url;
     }
 
@@ -149,7 +162,7 @@ class UrlBuilder {
    */
   public make(identifier: string) {
     const route = this.findRouteOrFail(identifier);
-    const url = this.processPattern(route.pattern);
+    const url = this.processPattern(route);
     return this.suffixQueryString(this.baseUrl ? `${this.baseUrl}${url}` : url);
   }
 }
