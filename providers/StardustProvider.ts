@@ -19,7 +19,7 @@ export default class StardustProvider {
      * Only sharing the main domain routes. Subdomains are
      * ignored for now. Let's see if many people need it
      */
-    const mainDomainRoutes = Route.toJSON()['root'];
+    const mainDomainRoutes = Route.toJSON()?.['root'] ?? [];
 
     return mainDomainRoutes.reduce<Record<string, string>>((routes, route) => {
       if (route.name) {
