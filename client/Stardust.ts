@@ -46,13 +46,3 @@ export class Stardust {
     return new UrlBuilder(this.routes).params(params).qs(options?.qs).prefixUrl(options?.prefixUrl).make(route);
   }
 }
-
-export let stardust: Stardust;
-
-/**
- * Initialize stardust
- */
-export function initRoutes() {
-  const { namedRoutes } = window.stardust;
-  stardust = new Stardust(namedRoutes);
-}
