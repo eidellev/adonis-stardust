@@ -8,7 +8,7 @@ interface RouteOptions {
   prefixUrl?: string;
 }
 
-class Stardust {
+export class Stardust {
   private routes: Record<string, string> = {};
 
   constructor(namedRoutes: Record<string, string>) {
@@ -42,7 +42,7 @@ class Stardust {
    * @param options Make url options
    * @returns Full path with params
    */
-  public route(route: string, params?: any[], options?: RouteOptions): string {
+  public route(route: string, params?: any[] | Record<string, any>, options?: RouteOptions): string {
     return new UrlBuilder(this.routes).params(params).qs(options?.qs).prefixUrl(options?.prefixUrl).make(route);
   }
 }
