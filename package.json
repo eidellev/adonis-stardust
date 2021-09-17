@@ -7,7 +7,7 @@
   "bugs": "https://github.com/eidellev/adonis-stardust/issues",
   "main": "build/providers/StardustProvider.js",
   "browser": "build/client/index.js",
-  "types": "build/client/stardust.d.ts",
+  "types": "build/client/index.d.ts",
   "files": [
     "build/providers",
     "build/client"
@@ -24,7 +24,7 @@
     "clean": "rimraf build",
     "build": "cross-env npm run clean && npm run build:node && npm run build:client",
     "build:node": "tsc",
-    "build:client": "esbuild ./build/client/index.js --outfile=build/client/index.js --allow-overwrite --bundle --platform=node --target=chrome91,edge90,firefox90,safari13",
+    "build:client": "node buildClient",
     "watch": "cross-env npm run clean && tsc -w",
     "test": "nyc node japaFile.js"
   },
