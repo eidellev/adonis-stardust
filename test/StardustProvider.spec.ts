@@ -8,6 +8,8 @@ test.group('Server', (group) => {
 
   test('Should handle empty router gracefully', async (assert) => {
     const app = await setup();
+    await app.start();
+
     const view = app.container.use('Adonis/Core/View');
 
     view.registerTemplate('dummy', { template: '@routes()' });
@@ -20,7 +22,7 @@ test.group('Server', (group) => {
     );
   });
 
-  test.skip('Should render named routes', async (assert) => {
+  test('Should render named routes', async (assert) => {
     const app = await setup();
     const router = app.container.use('Adonis/Core/Route');
     const view = app.container.use('Adonis/Core/View');
@@ -29,10 +31,16 @@ test.group('Server', (group) => {
     router.post('/users', async () => {}).as('users.store');
     router.commit();
 
+    await app.start();
+
     view.registerTemplate('dummy', { template: '@routes()' });
-    // @ts-ignore
     const dummy = await view.render('dummy');
 
-    assert.equal(true, true);
+    assert.equal(
+      dummy.trim(),
+      `<script>
+  window.stardust = {namedRoutes: {"index":"/","users.store":"/users"}};
+</script>`,
+    );
   });
 });

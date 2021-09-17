@@ -21,7 +21,6 @@ export async function setup() {
   await app.setup();
   await app.registerProviders();
   await app.bootProviders();
-  await app.start();
 
   return app;
 }
