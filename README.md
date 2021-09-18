@@ -14,7 +14,7 @@
 
 # ⭐ Adonis Stardust ⭐
 
-Use your adonis named routes in the client.
+Use your adonis named stardust in the client.
 
 ## Installation
 
@@ -26,7 +26,7 @@ node ace configure @eidellev/adonis-stardust
 
 ## Setup
 
-Create a named route in your routes file:
+Create a named route in your stardust file:
 
 ```typescript
 Route.get('users/:id', () => {
@@ -52,16 +52,22 @@ import { initRoutes } from '@eidellev/adonis-stardust';
 initRoutes();
 ```
 
-Now you can use the `routes` helper to access your adonis routes:
+Now you can use the `stardust` helper to access your adonis stardust:
 
 ```typescript
-import { routes } from '@eidellev/adonis-stardust';
+import { stardust } from '@eidellev/adonis-stardust';
 
-routes.route('users.show', { id: 1 }); // => `/users/1`
+stardust.route('users.show', { id: 1 }); // => `/users/1`
+
+/**
+ * You can also pass path params as an array and they will populated
+ * according to their order:
+ */
+stardust.route('users.show', [1]); // => `/users/1`
 ```
 
-You can also pass query parameters:
+You can also pass query parameters the following way:
 
 ```typescript
-routes.route('tasks.index', { _query: { tags: ['work', 'personal'] } }); // => `/tasks?tags=work,personal
+stardust.route('tasks.index', undefined, { qa: { tags: ['work', 'personal'] } }); // => `/tasks?tags=work,personal
 ```
