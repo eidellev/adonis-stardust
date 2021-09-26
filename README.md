@@ -52,7 +52,7 @@ import { initRoutes } from '@eidellev/adonis-stardust';
 initRoutes();
 ```
 
-Now you can use the `stardust` helper to access your adonis stardust:
+Now you can use the `stardust` helper to access your adonis routes:
 
 ```typescript
 import { stardust } from '@eidellev/adonis-stardust';
@@ -69,5 +69,5 @@ stardust.route('users.show', [1]); // => `/users/1`
 You can also pass query parameters the following way:
 
 ```typescript
-stardust.route('tasks.index', undefined, { qa: { tags: ['work', 'personal'] } }); // => `/tasks?tags=work,personal
+stardust.route('tasks.index', undefined, { qs: { tags: ['work', 'personal'] } }); // => `/tasks?tags=work,personal
 ```
