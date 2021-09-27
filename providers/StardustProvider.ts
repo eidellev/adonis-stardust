@@ -24,9 +24,7 @@ export default class StardustProvider {
     return mainDomainRoutes.reduce<Record<string, string>>((routes, route) => {
       if (route.name) {
         routes[route.name] = route.pattern;
-      }
-
-      if (typeof route.handler === 'string') {
+      } else if (typeof route.handler === 'string') {
         routes[route.handler] = route.pattern;
       }
 
