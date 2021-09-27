@@ -6,7 +6,7 @@ declare global {
   }
 }
 
-export let stardust;
+export let stardust: Stardust;
 
 /**
  * Initialize stardust
