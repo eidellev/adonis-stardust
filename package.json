@@ -57,5 +57,8 @@
     "semantic-release": "^17.4.7",
     "supertest": "^6.1.6",
     "typescript": "^4.4.3"
+  },
+  "dependencies": {
+    "@poppinss/matchit": "^3.1.2"
   }
 }

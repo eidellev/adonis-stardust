@@ -1,3 +1,4 @@
+import { match, parse } from '@poppinss/matchit';
 import { UrlBuilder } from './UrlBuilder';
 
 /**
@@ -10,6 +11,8 @@ interface RouteOptions {
 
 export class Stardust {
   private routes: Record<string, string> = {};
+  private reverseRoutes: Record<string, string> = {};
+  private parsedRoutePatterns: any[];
 
   constructor(namedRoutes: Record<string, string>) {
     if (!namedRoutes) {
@@ -17,7 +20,11 @@ export class Stardust {
       return;
     }
 
+    const parsedRoutePatterns = Object.entries(namedRoutes).map(([, pattern]) => parse(pattern));
+
     this.routes = namedRoutes;
+    this.reverseRoutes = Object.fromEntries(Object.entries(namedRoutes).map(([key, value]) => [value, key]));
+    this.parsedRoutePatterns = parsedRoutePatterns;
   }
 
   /**
@@ -44,5 +51,40 @@ export class Stardust {
    */
   public route(route: string, params?: any[] | Record<string, any>, options?: RouteOptions): string {
     return new UrlBuilder(this.routes).params(params).qs(options?.qs).prefixUrl(options?.prefixUrl).make(route);
+  }
+
+  /**
+   * Current route.
+   * If the current route doesn't match any named routes, the returned value will be `null`
+   * @example
+   * ```typescript
+   *  import { stardust } from '@eidellev/adonis-stardust';
+   * ...
+   *  stardust.current; // => 'users.index'
+   * ```
+   */
+  public get current(): string | null {
+    const { pathname } = new URL(window.location.href);
+    const [matchedRoute] = match(pathname, this.parsedRoutePatterns);
+
+    if (!matchedRoute) {
+      return null;
+    }
+
+    const { old: pattern } = matchedRoute;
+    return this.reverseRoutes[pattern];
+  }
+
+  /**
+   * Checks if a given route is the current route
+   * @example
+   * ```typescript
+   * import { stardust } from '@eidellev/adonis-stardust';
+   * ...
+   * stardust.isCurrent('users.index'); // => true/false
+   * ```
+   */
+  public isCurrent(route: string): boolean {
+    return route === this.current;
   }
 }
