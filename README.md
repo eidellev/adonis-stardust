@@ -44,9 +44,10 @@ Add the `@routes()` Edge tag to your main layout (before your application's Java
 
 ## Client-Side Usage
 
-In your application's entrypoint:
+### Setup
 
 ```typescript
+// Stardust should be initialized as early as possible, e.g. in your application's entrypoint
 import { initRoutes } from '@eidellev/adonis-stardust';
 
 initRoutes();
@@ -70,4 +71,11 @@ You can also pass query parameters the following way:
 
 ```typescript
 stardust.route('tasks.index', undefined, { qs: { tags: ['work', 'personal'] } }); // => `/tasks?tags=work,personal
+```
+
+### Checking the Current Route
+
+```typescript
+stardust.current; // => 'tasks.index'
+stardust.isCurrent('tasks.index'); // => true
 ```
