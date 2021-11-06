@@ -17,7 +17,7 @@ test.group('Server', (group) => {
     assert.equal(
       (await view.render('dummy')).trim(),
       `<script>
-  window.stardust = {namedRoutes: {}};
+  (globalThis || window).stardust = {namedRoutes: {}};
 </script>`,
     );
   });
@@ -39,7 +39,7 @@ test.group('Server', (group) => {
     assert.equal(
       dummy.trim(),
       `<script>
-  window.stardust = {namedRoutes: {"index":"/","users.store":"/users"}};
+  (globalThis || window).stardust = {namedRoutes: {"index":"/","users.store":"/users"}};
 </script>`,
     );
   });
