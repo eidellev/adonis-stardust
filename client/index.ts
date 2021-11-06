@@ -12,6 +12,6 @@ export let stardust: Stardust;
  * Initialize stardust
  */
 export function initRoutes() {
-  const { namedRoutes } = window.stardust;
+  const { namedRoutes } = (globalThis ?? window).stardust;
   stardust = new Stardust(namedRoutes);
 }

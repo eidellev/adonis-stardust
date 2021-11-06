@@ -56,17 +56,28 @@ export default class StardustProvider {
     View.global('routes', () => {
       return `
 <script>
-  window.stardust = {namedRoutes: ${JSON.stringify(namedRoutes)}};
+  (globalThis || window).stardust = {namedRoutes: ${JSON.stringify(namedRoutes)}};
 </script>
       `;
     });
   }
 
+  /**
+   * Registers named routes on the global scope in order to seamlessly support
+   * stardust's functionality on the server
+   * @param namedRoutes
+   */
+  private registerSsrRoutes(namedRoutes: Record<string, string>) {
+    globalThis.stardust = { namedRoutes };
+  }
+
   public ready() {
     this.app.container.withBindings(['Adonis/Core/View', 'Adonis/Core/Route'], (View, Route) => {
       const namedRoutes = this.getNamedRoutes(Route);
+
       this.registerRoutesGlobal(View, namedRoutes);
       this.registerStardustTag(View);
+      this.registerSsrRoutes(namedRoutes);
     });
   }
 }

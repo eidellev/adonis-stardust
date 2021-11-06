@@ -29,6 +29,12 @@ export class Stardust {
 
   /**
    * Returns all AdonisJS named routes
+   * @example
+   * ```typescript
+   *  import { stardust } from '@eidellev/adonis-stardust';
+   * ...
+   *  stardust.getRoutes();
+   * ```
    */
   public getRoutes() {
     return this.routes;
@@ -64,7 +70,7 @@ export class Stardust {
    * ```
    */
   public get current(): string | null {
-    const { pathname } = new URL(window.location.href);
+    const { pathname } = new URL(this.location.href);
     const [matchedRoute] = match(pathname, this.parsedRoutePatterns);
 
     if (!matchedRoute) {
@@ -73,6 +79,10 @@ export class Stardust {
 
     const { old: pattern } = matchedRoute;
     return this.reverseRoutes[pattern];
+  }
+
+  private get location() {
+    return (globalThis ?? window).location;
   }
 
   /**
