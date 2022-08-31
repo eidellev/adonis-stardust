@@ -43,7 +43,7 @@ export default class StardustProvider {
       compile(_, buffer, token) {
         buffer.writeExpression(
           `\n
-          out += template.sharedState.routes()
+          out += template.sharedState.routes(template.sharedState.cspNonce)
           `,
           token.filename,
           token.loc.start.line,
@@ -53,9 +53,9 @@ export default class StardustProvider {
   }
 
   private registerRoutesGlobal(View: ViewContract, namedRoutes: Record<string, string>) {
-    View.global('routes', () => {
+    View.global('routes', (cspNonce?: string) => {
       return `
-<script>
+<script${cspNonce ? ` nonce="${cspNonce}"` : ''}>
   (globalThis || window).stardust = {namedRoutes: ${JSON.stringify(namedRoutes)}};
 </script>
       `;
