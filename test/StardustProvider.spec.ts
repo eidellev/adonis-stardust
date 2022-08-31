@@ -22,6 +22,21 @@ test.group('Server', (group) => {
     );
   });
 
+  test('Should render nonce', async (assert) => {
+    const app = await setup();
+    await app.start();
+
+    const view = app.container.use('Adonis/Core/View');
+    const renderer = view.share({ cspNonce: 'test' });
+
+    assert.equal(
+      (await renderer.renderRaw('@routes')).trim(),
+      `<script nonce="test">
+  (globalThis || window).stardust = {namedRoutes: {}};
+</script>`,
+    );
+  });
+
   test('Should render named routes', async (assert) => {
     const app = await setup();
     const router = app.container.use('Adonis/Core/Route');
