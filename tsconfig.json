@@ -8,5 +8,5 @@
     "./node_modules/@adonisjs/core/build/adonis-typings/index.d.ts",
     "./node_modules/@adonisjs/view/build/adonis-typings/index.d.ts"
   ],
-  "exclude": ["build/*", "node_modules/*"]
+  "exclude": ["build/*", "node_modules/*", "src/*", "test/*"]
 }
