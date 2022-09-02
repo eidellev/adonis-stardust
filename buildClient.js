@@ -1,6 +1,6 @@
 require('esbuild').buildSync({
-  entryPoints: ['client/index.ts'],
-  outfile: 'build/client/index.js',
+  entryPoints: ['src/client/index.ts'],
+  outfile: 'client/index.js',
   allowOverwrite: true,
   bundle: true,
   platform: 'node',

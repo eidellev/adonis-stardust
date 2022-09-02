@@ -1,5 +1,5 @@
 import test from 'japa';
-import { Stardust } from '../client/Stardust';
+import { Stardust } from '../src/client/Stardust';
 
 test.group('Client', () => {
   test('should return all routes', (assert) => {

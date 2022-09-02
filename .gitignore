@@ -1,5 +1,7 @@
 node_modules
 build
+client
+!src/client
 coverage
 .vscode
 .DS_STORE

@@ -1,5 +1,6 @@
 {
   "extends": ["plugin:adonis/typescriptApp", "prettier"],
+  "ignorePatterns": ["src/*", "client/*"],
   "rules": {
     "no-console": "error"
   }
