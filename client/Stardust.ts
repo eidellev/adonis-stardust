@@ -70,8 +70,7 @@ export class Stardust {
    * ```
    */
   public get current(): string | null {
-    const { pathname } = new URL(this.location.href);
-    const [matchedRoute] = match(pathname, this.parsedRoutePatterns);
+    const [matchedRoute] = match(this.pathname, this.parsedRoutePatterns);
 
     if (!matchedRoute) {
       return null;
@@ -81,8 +80,16 @@ export class Stardust {
     return this.reverseRoutes[pattern];
   }
 
-  private get location() {
-    return (globalThis ?? window).location;
+  private get pathname() {
+    /**
+     * When rendering on the server
+     */
+    if (globalThis.stardust.pathname) {
+      return globalThis.stardust.pathname;
+    }
+
+    const { pathname } = new URL((window ?? globalThis).location.href);
+    return pathname;
   }
 
   /**

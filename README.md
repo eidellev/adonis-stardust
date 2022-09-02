@@ -18,7 +18,7 @@ Use your adonis named stardust in the client.
 
 ## Installation
 
-```bash
+```shell
 npm i @eidellev/adonis-stardust
 
 node ace configure @eidellev/adonis-stardust
