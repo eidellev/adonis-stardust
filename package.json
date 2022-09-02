@@ -8,9 +8,12 @@
   "main": "build/providers/StardustProvider.js",
   "browser": "build/client/index.js",
   "types": "build/client/index.d.ts",
+  "typings": "./build/adonis-typings/index.d.ts",
   "files": [
     "build/providers",
-    "build/client"
+    "build/client",
+    "build/adonis-typings",
+    "build/middleware"
   ],
   "adonisjs": {
     "providers": [

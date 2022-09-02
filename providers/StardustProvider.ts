@@ -1,6 +1,7 @@
 import { ApplicationContract } from '@ioc:Adonis/Core/Application';
 import { RouterContract } from '@ioc:Adonis/Core/Route';
 import { ViewContract } from '@ioc:Adonis/Core/View';
+import StardustMiddleware from '../middleware/Stardust';
 
 /*
 |--------------------------------------------------------------------------
@@ -72,6 +73,8 @@ export default class StardustProvider {
   }
 
   public ready() {
+    this.app.container.bind('EidelLev/Stardust/Middleware', () => StardustMiddleware);
+
     this.app.container.withBindings(['Adonis/Core/View', 'Adonis/Core/Route'], (View, Route) => {
       const namedRoutes = this.getNamedRoutes(Route);
 
