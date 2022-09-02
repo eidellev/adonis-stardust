@@ -26,6 +26,19 @@ node ace configure @eidellev/adonis-stardust
 
 ## Setup
 
+### Register Middleware
+
+Add the Stardust middleware to `start/kernel.ts`:
+
+```typescript
+Server.middleware.register([
+  () => import('@ioc:Adonis/Core/BodyParser'),
+  () => import('@ioc:EidelLev/Stardust/Middleware'),
+]);
+```
+
+### Register a Named Route
+
 Create a named route in your stardust file:
 
 ```typescript
@@ -34,21 +47,24 @@ Route.get('users/:id', () => {
 }).as('users.show');
 ```
 
-Add the `@routes()` Edge tag to your main layout (before your application's JavaScript).
+### In Your View
+
+Add the `@routes` Edge tag to your main layout (before your application's JavaScript).
 
 ```blade
-@routes()
+@routes
 @entryPointStyles('app')
 @entryPolintScripts('app')
 ```
 
 ## Client-Side Usage
 
-### Setup
+### Client Setup
+
+Stardust should be initialized as early as possible, e.g. in your application's entrypoint
 
 ```typescript
-// Stardust should be initialized as early as possible, e.g. in your application's entrypoint
-import { initRoutes } from '@eidellev/adonis-stardust';
+import { initRoutes } from '@eidellev/adonis-stardust/client';
 
 initRoutes();
 ```
@@ -56,7 +72,7 @@ initRoutes();
 Now you can use the `stardust` helper to access your adonis routes:
 
 ```typescript
-import { stardust } from '@eidellev/adonis-stardust';
+import { stardust } from '@eidellev/adonis-stardust/client';
 
 stardust.route('users.show', { id: 1 }); // => `/users/1`
 
@@ -67,10 +83,11 @@ stardust.route('users.show', { id: 1 }); // => `/users/1`
 stardust.route('users.show', [1]); // => `/users/1`
 ```
 
-You can also pass query parameters the following way:
+You can also pass query parameters like so:
 
 ```typescript
-stardust.route('tasks.index', undefined, { qs: { tags: ['work', 'personal'] } }); // => `/tasks?tags=work,personal
+stardust.route('tasks.index', undefined, { qs: { tags: ['work', 'personal'] } });
+// `/tasks?tags=work,personal
 ```
 
 ### Checking the Current Route
