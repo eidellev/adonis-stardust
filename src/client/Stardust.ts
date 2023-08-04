@@ -9,21 +9,31 @@ interface RouteOptions {
   prefixUrl?: string;
 }
 
+type NamedRoutes = Record<string, { pattern: string; methods: string[] }>;
+type PatternRoutes = Record<string, { name: string; methods: string[] }[]>;
+
 export class Stardust {
-  private routes: Record<string, string> = {};
-  private reverseRoutes: Record<string, string> = {};
+  private routes: NamedRoutes = {};
+  private reverseRoutes: PatternRoutes = {};
   private parsedRoutePatterns: any[];
 
-  constructor(namedRoutes: Record<string, string>) {
+  constructor(namedRoutes: NamedRoutes) {
     if (!namedRoutes) {
-      console.error('Routes could not be found. Please make sure you use the `@routes()` tag in your view!');
-      return;
+      throw new Error('Routes could not be found. Please make sure you use the `@routes()` tag in your view!');
     }
 
-    const parsedRoutePatterns = Object.entries(namedRoutes).map(([, pattern]) => parse(pattern));
+    const parsedRoutePatterns = Object.values(namedRoutes).map(({ pattern }) => parse(pattern));
 
     this.routes = namedRoutes;
-    this.reverseRoutes = Object.fromEntries(Object.entries(namedRoutes).map(([key, value]) => [value, key]));
+    this.reverseRoutes = Object.entries(namedRoutes).reduce<PatternRoutes>((routes, [name, { pattern, methods }]) => {
+      if (!routes[pattern]) {
+        routes[pattern] = [];
+      }
+
+      routes[pattern].push({ name, methods });
+
+      return routes;
+    }, {});
     this.parsedRoutePatterns = parsedRoutePatterns;
   }
 
@@ -72,19 +82,16 @@ export class Stardust {
   public get current(): string | null {
     const [matchedRoute] = match(this.pathname, this.parsedRoutePatterns);
 
-    if (!matchedRoute) {
-      return null;
-    }
+    const pattern = matchedRoute?.old ?? null;
 
-    const { old: pattern } = matchedRoute;
-    return this.reverseRoutes[pattern];
+    return this.reverseRoutes[pattern]?.find(({ methods }) => methods.includes('GET'))?.name ?? null;
   }
 
   private get pathname() {
     /**
      * When rendering on the server
      */
-    if (globalThis.stardust.pathname) {
+    if (globalThis.stardust?.pathname) {
       return globalThis.stardust.pathname;
     }
 

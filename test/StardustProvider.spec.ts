@@ -54,7 +54,7 @@ test.group('Server', (group) => {
     assert.equal(
       dummy.trim(),
       `<script>
-  (globalThis || window).stardust = {namedRoutes: {"index":"/","users.store":"/users"}};
+  (globalThis || window).stardust = {namedRoutes: {"index":{"pattern":"/","methods":["HEAD","GET"]},"users.store":{"pattern":"/users","methods":["POST"]}}};
 </script>`,
     );
   });

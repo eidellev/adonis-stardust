@@ -3,6 +3,8 @@ import { RouterContract } from '@ioc:Adonis/Core/Route';
 import { ViewContract } from '@ioc:Adonis/Core/View';
 import StardustMiddleware from '../middleware/Stardust';
 
+type RoutesManifest = Record<string, { pattern: string; methods: string[] }>;
+
 /*
 |--------------------------------------------------------------------------
 | Stardust Provider
@@ -22,11 +24,17 @@ export default class StardustProvider {
      */
     const mainDomainRoutes = Route.toJSON()?.['root'] ?? [];
 
-    return mainDomainRoutes.reduce<Record<string, string>>((routes, route) => {
+    return mainDomainRoutes.reduce<RoutesManifest>((routes, route) => {
       if (route.name) {
-        routes[route.name] = route.pattern;
+        routes[route.name] = {
+          pattern: route.pattern,
+          methods: route.methods,
+        };
       } else if (typeof route.handler === 'string') {
-        routes[route.handler] = route.pattern;
+        routes[route.handler] = {
+          pattern: route.pattern,
+          methods: route.methods,
+        };
       }
 
       return routes;
@@ -53,7 +61,7 @@ export default class StardustProvider {
     });
   }
 
-  private registerRoutesGlobal(View: ViewContract, namedRoutes: Record<string, string>) {
+  private registerRoutesGlobal(View: ViewContract, namedRoutes: RoutesManifest) {
     View.global('routes', (cspNonce?: string) => {
       return `
 <script${cspNonce ? ` nonce="${cspNonce}"` : ''}>
@@ -68,7 +76,7 @@ export default class StardustProvider {
    * stardust's functionality on the server
    * @param namedRoutes
    */
-  private registerSsrRoutes(namedRoutes: Record<string, string>) {
+  private registerSsrRoutes(namedRoutes: RoutesManifest) {
     globalThis.stardust = { namedRoutes };
   }
 
