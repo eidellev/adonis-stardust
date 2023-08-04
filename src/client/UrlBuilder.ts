@@ -18,7 +18,7 @@ export class UrlBuilder {
    */
   private baseUrl: string;
 
-  constructor(private routes: Record<string, any>) {}
+  constructor(private routes: Record<string, { pattern: string; methods: string[] }>) {}
 
   /**
    * Processes the pattern with the route params
@@ -148,7 +148,7 @@ export class UrlBuilder {
    */
   public make(identifier: string) {
     const route = this.findRouteOrFail(identifier);
-    const url = this.processPattern(route);
+    const url = this.processPattern(route.pattern);
     return this.suffixQueryString(this.baseUrl ? `${this.baseUrl}${url}` : url);
   }
 }
